@@ -1,6 +1,3 @@
-use reqwest::StatusCode;
-use serde_json::json;
-
 use crate::FcmError;
 
 #[derive(thiserror::Error, Debug)]

@@ -1,7 +1,6 @@
-use reqwest::header::{AUTHORIZATION, CONTENT_LENGTH, CONTENT_TYPE, RETRY_AFTER};
-use reqwest::{Body, StatusCode};
+use reqwest::header::{AUTHORIZATION, CONTENT_LENGTH, CONTENT_TYPE};
 
-use crate::{Message, FcmResponse, FcmError};
+use crate::{Message, FcmResponse};
 
 pub struct Client {
     client: reqwest::Client,
@@ -27,18 +26,17 @@ impl Client {
         println!("{}", serde_json::to_string(&message).unwrap());
         let payload = serde_json::to_vec(&message)?;
 
-        let request = self
+        let fcm_response = self
             .client
             .post(format!("https://fcm.googleapis.com/v1/projects/{}/messages:send", message.project_id))
             .header(CONTENT_TYPE, "application/json; UTF-8")
-            .header(CONTENT_LENGTH, format!("{}", payload.len() as u64).as_bytes())
+            .header(CONTENT_LENGTH, payload.len())
             .header(AUTHORIZATION, format!("Bearer {}", message.jwt).as_bytes())
-            .body(Body::from(payload))
-            .build()?;
-
-        let response = self.client.execute(request).await?;
-
-        let fcm_response: FcmResponse = response.json().await?;
+            .json(&message)
+            .send()
+            .await?
+            .json()
+            .await?;
 
         match fcm_response {
             FcmResponse::Error(e) => Err(crate::Error::FcmError(e)),

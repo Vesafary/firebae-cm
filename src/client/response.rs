@@ -16,6 +16,6 @@ impl std::fmt::Display for FcmError {
 pub enum FcmResponse {
     #[serde(rename = "name")]
     Success(String),
-    #[serde(rename = "lowercase")]
+    #[serde(rename = "error")]
     Error(FcmError),
 }

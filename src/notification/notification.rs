@@ -2,7 +2,7 @@ use crate::{
     Color
 };
 
-#[derive(serde::Serialize, Debug)]
+#[derive(serde::Serialize, Debug, Clone)]
 pub enum NotificationPriority {
     PriorityUnspecified,
     PriorityMin,
@@ -12,7 +12,7 @@ pub enum NotificationPriority {
     PriorityMax,
 }
 
-#[derive(serde::Serialize, Debug)]
+#[derive(serde::Serialize, Debug, Clone)]
 pub enum Visibility {
     VisibilityUnspecified,
     Private,
@@ -20,7 +20,7 @@ pub enum Visibility {
     Secret,
 }
 
-#[derive(serde::Serialize, Debug, Default)]
+#[derive(serde::Serialize, Debug, Default, Clone)]
 pub struct LightSettings {
     color: Option<Color>,
     light_on_duration: Option<String>,
@@ -48,7 +48,7 @@ impl LightSettings {
     }
 }
 
-#[derive(serde::Serialize, Debug)]
+#[derive(serde::Serialize, Debug, Clone)]
 pub struct Notification {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,

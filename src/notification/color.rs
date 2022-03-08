@@ -1,4 +1,4 @@
-#[derive(serde::Serialize, Debug, Default)]
+#[derive(serde::Serialize, Debug, Default, Clone)]
 pub struct Color {
     pub red: f32,
     pub green: f32,

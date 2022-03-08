@@ -5,14 +5,14 @@ use crate::{
     AndroidFcmOptions,
 };
 
-#[derive(serde::Serialize, Debug)]
+#[derive(serde::Serialize, Debug, Clone)]
 #[serde(rename_all = "lowercase")]
 pub enum AndroidMessagePriority {
     Normal,
     High,
 }
 
-#[derive(serde::Serialize, Debug, Default)]
+#[derive(serde::Serialize, Debug, Default, Clone)]
 pub struct AndroidConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     collapse_key: Option<String>,

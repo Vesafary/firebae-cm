@@ -5,7 +5,7 @@ use crate::{
 };
 
 
-#[derive(serde::Serialize, Debug, Default)]
+#[derive(serde::Serialize, Debug, Default, Clone)]
 pub struct AndroidNotification {
     #[serde(skip_serializing_if = "Option::is_none")]
     title: Option<String>,

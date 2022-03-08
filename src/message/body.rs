@@ -1,9 +1,6 @@
 use serde_json::Value;
 
-use crate::{
-    Notification,
-    Receiver,
-};
+use crate::{AndroidConfig, Notification, Receiver};
 
 
 #[derive(serde::Serialize, Debug)]
@@ -16,6 +13,8 @@ pub struct MessageBody {
     data: Option<Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     notification: Option<Notification>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    android: Option<AndroidConfig>,
 }
 
 impl MessageBody {
@@ -25,6 +24,7 @@ impl MessageBody {
             receiver,
             data: None,
             notification: None,
+            android: None,
         }
     }
 
@@ -40,6 +40,11 @@ impl MessageBody {
 
     pub fn notification(&mut self, notification: Notification) -> &mut Self {
         self.notification = Some(notification);
+        self
+    }
+
+    pub fn android(&mut self, android: AndroidConfig) -> &mut Self {
+        self.android = Some(android);
         self
     }
 }
