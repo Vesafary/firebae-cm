@@ -15,7 +15,6 @@ impl Default for Client {
 impl Client {
     pub fn new() -> Self {
         let client = reqwest::ClientBuilder::new()
-            .pool_max_idle_per_host(usize::MAX)
             .build()
             .unwrap();
 
@@ -23,7 +22,6 @@ impl Client {
     }
 
     pub async fn send(&self, message: Message) -> crate::Result<String> {
-        println!("{}", serde_json::to_string(&message).unwrap());
         let payload = serde_json::to_vec(&message)?;
 
         let fcm_response = self
