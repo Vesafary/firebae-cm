@@ -1,6 +1,6 @@
 use serde_json::Value;
 
-use crate::{AndroidConfig, Notification, Receiver};
+use crate::{AndroidConfig, ApnsConfig, Notification, Receiver};
 
 
 #[derive(serde::Serialize, Debug)]
@@ -15,6 +15,8 @@ pub struct MessageBody {
     notification: Option<Notification>,
     #[serde(skip_serializing_if = "Option::is_none")]
     android: Option<AndroidConfig>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    apns: Option<ApnsConfig>,
 }
 
 impl MessageBody {
@@ -25,6 +27,7 @@ impl MessageBody {
             data: None,
             notification: None,
             android: None,
+            apns: None,
         }
     }
 
@@ -45,6 +48,11 @@ impl MessageBody {
 
     pub fn android(&mut self, android: AndroidConfig) -> &mut Self {
         self.android = Some(android);
+        self
+    }
+
+    pub fn apns(&mut self, apns: ApnsConfig) -> &mut Self {
+        self.apns = Some(apns);
         self
     }
 }
