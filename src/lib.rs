@@ -1,6 +1,3 @@
-mod authentication;
-pub use authentication::*;
-
 mod client;
 pub use client::*;
 
