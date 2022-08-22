@@ -1,6 +1,6 @@
 [package]
 name = "firebae-cm"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 
 description = "A Firebase Cloud Messaging Http V1 implementation"
@@ -12,6 +12,6 @@ repository = "https://github.com/Vesafary/firebae-cm"
 serde =             { version = "1.0.136", features = ["derive"] }
 serde_json =        { version = "1.0.79" }
 reqwest =           { version = "0.11.9", features = ["json"], default-features=false }
-chrono =            { version = "0.4.19" }
+time =              { version = "0.3.13", features = ["formatting"] }
 log =               { version = "0.4.14" }
 thiserror =         { version = "1.0.30" }

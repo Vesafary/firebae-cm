@@ -1,3 +1,5 @@
+use time::format_description::well_known::Rfc3339;
+
 use crate::{
     NotificationPriority,
     Visibility,
@@ -134,9 +136,9 @@ impl AndroidNotification {
         self
     }
 
-    pub fn event_time(&mut self, event_time: chrono::DateTime<chrono::Utc>) -> &mut Self {
-        self.event_time = Some(event_time.to_rfc3339());
-        self
+    pub fn event_time(&mut self, event_time: time::OffsetDateTime) -> crate::Result<&mut Self> {
+        self.event_time = Some(event_time.format(&Rfc3339)?);
+        Ok(self)
     }
 
     pub fn local_only(&mut self, local_only: bool) -> &mut Self {
