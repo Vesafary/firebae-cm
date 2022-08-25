@@ -10,6 +10,8 @@ pub enum Error {
     Other(String, u16),
     #[error("{0}")]
     FcmError(#[from] FcmError),
+    #[error("{0}")]
+    TimeFormatError(#[from] time::error::Format),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
