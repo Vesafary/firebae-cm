@@ -1,7 +1,7 @@
-use crate::{
-    Color
-};
+use crate::Color;
 
+/// Represents the priority of the notification.
+/// See <https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#notificationpriority>.
 #[derive(serde::Serialize, Debug, Clone)]
 #[serde(rename_all = "snake_case")]
 pub enum NotificationPriority {
@@ -13,6 +13,8 @@ pub enum NotificationPriority {
     PriorityMax,
 }
 
+/// Represents the visibility of the notification.
+/// See <https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#visibility>
 #[derive(serde::Serialize, Debug, Clone)]
 #[serde(rename_all = "snake_case")]
 pub enum Visibility {
@@ -22,6 +24,9 @@ pub enum Visibility {
     Secret,
 }
 
+/// Represents the notification light settings of the notification.
+/// See <https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#lightsettings>.
+/// Durations are in seconds.
 #[derive(serde::Serialize, Debug, Default, Clone)]
 pub struct LightSettings {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -53,6 +58,16 @@ impl LightSettings {
     }
 }
 
+/// Represents a basic template for notifications, which is equal across all platforms.
+/// See <https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#notification>.
+/// Use the `Notification::new` function, or initialize the struct yourself:
+/// ```rust
+/// let notification = Notification {
+///     title: Some("Hello, ").to_string(),
+///     body: Some("world!").to_string(),
+///     image: None,
+/// };
+/// ```
 #[derive(serde::Serialize, Debug, Clone)]
 pub struct Notification {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -61,4 +76,42 @@ pub struct Notification {
     pub body: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
+}
+
+impl Notification {
+    /// Creates an empty Notification.
+    pub fn new() -> Self {
+        Self {
+            title: None,
+            body: None,
+            image: None,
+        }
+    }
+
+    /// Easily create a notification with any type that implements `Into<String>` (such as `&str`).
+    /// ```rust
+    /// let notification = Notification::new().with_title("Hello!");
+    /// ```
+    pub fn with_title(mut self, title: impl Into<String>) -> Self {
+        self.title = Some(title.into());
+        self
+    }
+
+    /// Easily create a notification with any type that implements `Into<String>` (such as `&str`).
+    /// ```rust
+    /// let notification = Notification::new().with_title("Hello, ").with_body("world!");
+    /// ```
+    pub fn with_body(mut self, body: impl Into<String>) -> Self {
+        self.body = Some(body.into());
+        self
+    }
+
+    /// Easily create a notification with any type that implements `Into<String>` (such as `&str`).
+    /// ```rust
+    /// let notification = Notification::new().with_image("/static/img.png");
+    /// ```
+    pub fn with_image(mut self, image: impl Into<String>) -> Self {
+        self.image = Some(image.into());
+        self
+    }
 }

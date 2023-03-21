@@ -1,6 +1,6 @@
 [package]
 name = "firebae-cm"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 
 description = "A Firebase Cloud Messaging Http V1 implementation"
@@ -9,9 +9,22 @@ homepage = "https://github.com/Vesafary/firebae-cm"
 repository = "https://github.com/Vesafary/firebae-cm"
 
 [dependencies]
-serde =             { version = "1.0.136", features = ["derive"] }
-serde_json =        { version = "1.0.79" }
-reqwest =           { version = "0.11.9", features = ["json"], default-features=false }
-time =              { version = "0.3.13", features = ["formatting"] }
-log =               { version = "0.4.14" }
-thiserror =         { version = "1.0.30" }
+serde =             { version = "1.0.158", features = ["derive"] }
+serde_json =        { version = "1.0.94" }
+reqwest =           { version = "0.11.15", features = ["json", "rustls-tls"], default-features = false }
+time =              { version = "0.3.20", features = ["formatting"] }
+log =               { version = "0.4.17" }
+thiserror =         { version = "1.0.40" }
+gcp_auth =          { version = "0.7.5", optional = true }
+tokio =             { version = "1.26.0", features = ["sync", "parking_lot"], default-features = false, optional = true }
+
+[features]
+oauth = ["dep:gcp_auth", "dep:tokio"]
+
+
+# docs.rs-specific configuration
+[package.metadata.docs.rs]
+# document all features
+all-features = true
+# defines the configuration attribute `docsrs`
+rustdoc-args = ["--cfg", "docsrs"]
