@@ -16,7 +16,7 @@ impl Default for Client {
 impl Client {
     /// Creates a client
     pub fn new() -> Self {
-        let client = reqwest::ClientBuilder::new().build().unwrap();
+        let client = reqwest::ClientBuilder::new().use_rustls_tls().build().unwrap();
 
         Self { client }
     }

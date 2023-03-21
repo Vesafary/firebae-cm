@@ -11,13 +11,20 @@ repository = "https://github.com/Vesafary/firebae-cm"
 [dependencies]
 serde =             { version = "1.0.158", features = ["derive"] }
 serde_json =        { version = "1.0.94" }
-reqwest =           { version = "0.11.14", features = ["json"], default-features=false }
+reqwest =           { version = "0.11.15", features = ["json", "rustls-tls"], default-features = false }
 time =              { version = "0.3.20", features = ["formatting"] }
 log =               { version = "0.4.17" }
 thiserror =         { version = "1.0.40" }
 gcp_auth =          { version = "0.7.5", optional = true }
-once_cell =         { version = "1.17.1", optional = true }
-uuid =              { version = "1"}
+tokio =             { version = "1.26.0", features = ["sync", "parking_lot"], default-features = false, optional = true }
 
 [features]
-oauth = ["dep:gcp_auth", "dep:once_cell"]
+oauth = ["dep:gcp_auth", "dep:tokio"]
+
+
+# docs.rs-specific configuration
+[package.metadata.docs.rs]
+# document all features
+all-features = true
+# defines the configuration attribute `docsrs`
+rustdoc-args = ["--cfg", "docsrs"]

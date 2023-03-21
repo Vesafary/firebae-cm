@@ -79,19 +79,39 @@ pub struct Notification {
 }
 
 impl Notification {
+    /// Creates an empty Notification.
+    pub fn new() -> Self {
+        Self {
+            title: None,
+            body: None,
+            image: None,
+        }
+    }
+
     /// Easily create a notification with any type that implements `Into<String>` (such as `&str`).
     /// ```rust
-    /// let notification = Notification::new(Some("Hello, "), Some("world!"), None);
+    /// let notification = Notification::new().with_title("Hello!");
     /// ```
-    pub fn new(
-        title: Option<impl Into<String>>,
-        body: Option<impl Into<String>>,
-        image: Option<impl Into<String>>,
-    ) -> Self {
-        Self {
-            title: title.map(Into::into),
-            body: body.map(Into::into),
-            image: image.map(Into::into),
-        }
+    pub fn with_title(mut self, title: impl Into<String>) -> Self {
+        self.title = Some(title.into());
+        self
+    }
+
+    /// Easily create a notification with any type that implements `Into<String>` (such as `&str`).
+    /// ```rust
+    /// let notification = Notification::new().with_title("Hello, ").with_body("world!");
+    /// ```
+    pub fn with_body(mut self, body: impl Into<String>) -> Self {
+        self.body = Some(body.into());
+        self
+    }
+
+    /// Easily create a notification with any type that implements `Into<String>` (such as `&str`).
+    /// ```rust
+    /// let notification = Notification::new().with_image("/static/img.png");
+    /// ```
+    pub fn with_image(mut self, image: impl Into<String>) -> Self {
+        self.image = Some(image.into());
+        self
     }
 }

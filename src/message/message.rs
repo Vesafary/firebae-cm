@@ -1,7 +1,7 @@
 use crate::MessageBody;
 
 /// A representation of a complete message that can be sent. It requires your project_id and an authentication JWT token (see <https://cloud.google.com/docs/authentication/>).
-/// For automatic handling of the JWT authentication, see the `oauth` feature and the `Message::with_auth` function.
+/// For automatic handling of the JWT authentication, see the `oauth` feature and the `Message::with_oauth` function.
 #[derive(serde::Serialize, Debug)]
 pub struct Message {
     #[serde(skip_serializing)]
@@ -22,13 +22,15 @@ impl Message {
     }
 }
 
-#[cfg(feature = "oauth")]
+#[cfg(all(feature = "oauth", not(all(loom, test))))]
 mod oauth {
     use gcp_auth::AuthenticationManager;
     pub use gcp_auth::Error;
-    use once_cell::sync::OnceCell;
+    use tokio::sync::OnceCell;
 
-    static AUTH_MANAGER: OnceCell<AuthenticationManager> = OnceCell::new();
+    use super::{Message, MessageBody};
+
+    static AUTH_MANAGER: OnceCell<AuthenticationManager> = OnceCell::const_new();
 
     async fn authentication_manager() -> &'static AuthenticationManager {
         AUTH_MANAGER
@@ -41,6 +43,7 @@ mod oauth {
     }
 
     impl Message {
+        #[cfg_attr(docsrs, doc(cfg(feature = "oauth")))]
         /// Create a new Message and automatically handle (oauth) authentication. Requires the `oauth` feature.
         /// To use this, make sure to set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable with the path to the `credentials.json` file.
         /// Check the GCP documentation to obtain such file: <https://cloud.google.com/docs/authentication/provide-credentials-adc>.
@@ -51,8 +54,8 @@ mod oauth {
             let scopes = &["https://www.googleapis.com/auth/cloud-platform"];
             let full_token = authentication_manager().await.get_token(scopes).await?;
             let token = full_token.as_str().trim_end_matches(".");
-
-            Self::new(project_id, token, body)
+    
+            Ok(Self::new(project_id, token, body))
         }
     }
 }

@@ -20,7 +20,7 @@ use firebae_cm::{
 };
 
 #[tokio::main]
-async fn main {
+async fn main() {
     let token = "your_jwt_token";
 
     // Define the receiver mode (Token, Topic or Condition).
@@ -45,6 +45,8 @@ You will still need Firebase to be setup correctly and the path to a
 valid `credentials.json` file in the `GOOGLE_APPLICATION_CREDENTIALS`
 environment variable. Then, creating a message can be done using `Message::with_oauth("project_id", body).await?`.
 */
+
+#![cfg_attr(docsrs, feature(doc_cfg))]
 
 mod client;
 pub use client::*;
