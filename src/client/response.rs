@@ -1,3 +1,4 @@
+/// A Firebase Cloud Message Error, as
 #[derive(serde::Deserialize, thiserror::Error, Debug)]
 pub struct FcmError {
     pub code: u16,
@@ -10,7 +11,6 @@ impl std::fmt::Display for FcmError {
         write!(f, "{} ({}): {}", self.status, self.code, self.message)
     }
 }
-
 
 #[derive(serde::Deserialize, Debug)]
 pub enum FcmResponse {

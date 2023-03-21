@@ -6,7 +6,7 @@ I recommend to read up on FCM before attempting to use this crate.
 
 | What | Where | 
 | ---- | ----- | 
-| Basic information on FCM | https://firebase.google.com/docs/cloud-messaging?authuser=0 |
+| Basic information on FCM | https://firebase.google.com/docs/cloud-messaging |
 | Used data structure | https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages |
 
 

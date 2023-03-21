@@ -1,10 +1,11 @@
+use std::collections::HashMap;
+
 use serde_json::Value;
 
-use crate::{
-    AndroidNotification,
-    AndroidFcmOptions,
-};
+use crate::{AndroidFcmOptions, AndroidNotification};
 
+/// Represents the Android message priority.
+/// See <https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#androidmessagepriority>.
 #[derive(serde::Serialize, Debug, Clone)]
 #[serde(rename_all = "lowercase")]
 pub enum AndroidMessagePriority {
@@ -12,6 +13,8 @@ pub enum AndroidMessagePriority {
     High,
 }
 
+/// Represents all settings for an Android message.
+/// See <https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#AndroidConfig> for a complete list.
 #[derive(serde::Serialize, Debug, Default, Clone)]
 pub struct AndroidConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -37,8 +40,8 @@ impl AndroidConfig {
         Default::default()
     }
 
-    pub fn collapse_key(&mut self, collapse_key: String) -> &mut Self {
-        self.collapse_key = Some(collapse_key);
+    pub fn collapse_key(&mut self, collapse_key: impl Into<String>) -> &mut Self {
+        self.collapse_key = Some(collapse_key.into());
         self
     }
 
@@ -52,14 +55,19 @@ impl AndroidConfig {
         self
     }
 
-    pub fn restricted_package_name(&mut self, restricted_package_name: String) -> &mut Self {
-        self.restricted_package_name = Some(restricted_package_name);
+    pub fn restricted_package_name(
+        &mut self,
+        restricted_package_name: impl Into<String>,
+    ) -> &mut Self {
+        self.restricted_package_name = Some(restricted_package_name.into());
         self
     }
 
-    pub fn data(&mut self, data: Value) -> &mut Self {
-        self.data = Some(data);
-        self
+    /// Sets the data of the message.
+    /// See <https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#AndroidConfig>.
+    pub fn data(&mut self, data: impl Into<HashMap<String, String>>) -> crate::Result<&mut Self> {
+        self.data = Some(serde_json::to_value(data.into())?);
+        Ok(self)
     }
 
     pub fn notification(&mut self, notification: AndroidNotification) -> &mut Self {
