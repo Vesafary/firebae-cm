@@ -68,7 +68,7 @@ impl LightSettings {
 ///     image: None,
 /// };
 /// ```
-#[derive(serde::Serialize, Debug, Clone)]
+#[derive(serde::Serialize, Debug, Clone, Default)]
 pub struct Notification {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
@@ -81,11 +81,7 @@ pub struct Notification {
 impl Notification {
     /// Creates an empty Notification.
     pub fn new() -> Self {
-        Self {
-            title: None,
-            body: None,
-            image: None,
-        }
+        Default::default()
     }
 
     /// Easily create a notification with any type that implements `Into<String>` (such as `&str`).
