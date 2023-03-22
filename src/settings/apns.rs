@@ -1,8 +1,6 @@
-use std::collections::HashMap;
-
 use serde_json::Value;
 
-use crate::ApnsFcmOptions;
+use crate::{ApnsFcmOptions, IntoFirebaseMap};
 
 /// Represents all settings for Apple notifications.
 /// See <https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#apnsconfig>.
@@ -21,13 +19,15 @@ impl ApnsConfig {
         Default::default()
     }
 
-    pub fn headers(&mut self, headers: impl Into<HashMap<String, String>>) -> crate::Result<&mut Self> {
-        self.headers = Some(serde_json::to_value(headers.into())?);
+    /// Set the headers field. Accepts any type that implements IntoFirebaseMap, which will construct the required Map<String, String>.
+    pub fn headers(&mut self, headers: impl IntoFirebaseMap) -> crate::Result<&mut Self> {
+        self.headers = Some(serde_json::to_value(headers.as_map().get_map())?);
         Ok(self)
     }
 
-    pub fn payload(&mut self, payload: impl Into<HashMap<String, String>>) -> crate::Result<&mut Self> {
-        self.payload = Some(serde_json::to_value(payload.into())?);
+    /// Set the payload field. Accepts any type that implements IntoFirebaseMap, which will construct the required Map<String, String>.
+    pub fn payload(&mut self, payload: impl IntoFirebaseMap) -> crate::Result<&mut Self> {
+        self.payload = Some(serde_json::to_value(payload.as_map().get_map())?);
         Ok(self)
     }
 

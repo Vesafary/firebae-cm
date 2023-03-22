@@ -54,7 +54,7 @@ mod oauth {
             let scopes = &["https://www.googleapis.com/auth/cloud-platform"];
             let full_token = authentication_manager().await.get_token(scopes).await?;
             let token = full_token.as_str().trim_end_matches(".");
-    
+
             Ok(Self::new(project_id, token, body))
         }
     }

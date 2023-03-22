@@ -1,8 +1,8 @@
-use std::collections::HashMap;
-
 use serde_json::Value;
 
-use crate::{AndroidConfig, ApnsConfig, FcmOptions, Notification, Receiver, WebpushConfig};
+use crate::{
+    AndroidConfig, ApnsConfig, FcmOptions, IntoFirebaseMap, Notification, Receiver, WebpushConfig,
+};
 
 /// A message body as described in <https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#resource:-message>.
 ///
@@ -16,7 +16,7 @@ use crate::{AndroidConfig, ApnsConfig, FcmOptions, Notification, Receiver, Webpu
 ///
 /// // Setup of message fields.
 /// let receiver = Receiver::topic("subscribers");
-/// let notification = Notification::new(Some("Hello, "), Some("world!"), None);
+/// let notification = Notification::new().with_title("Hello, ").with_body("world!");
 ///
 /// // Create MessageBody and set the message name and notification.
 /// let mut body = MesageBody::new(receiver);
@@ -66,10 +66,10 @@ impl MessageBody {
         self
     }
 
-    /// Sets the data of the message.
+    /// Sets the data of the message. Accepts any type that implements IntoFirebaseMap, which will construct the required Map<String, String>.
     /// See <https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#resource:-message>.
-    pub fn data(&mut self, data: impl Into<HashMap<String, String>>) -> crate::Result<&mut Self> {
-        self.data = Some(serde_json::to_value(data.into())?);
+    pub fn data(&mut self, data: impl IntoFirebaseMap) -> crate::Result<&mut Self> {
+        self.data = Some(serde_json::to_value(data.as_map().get_map())?);
         Ok(self)
     }
 

@@ -1,9 +1,9 @@
 /// A Firebase Cloud Message Error. For example, an invalid JWT token would return the following error:
 /// ```
-/// FcmError { 
-///     code: 401, 
-///     message: "Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.", 
-///     status: "UNAUTHENTICATED" 
+/// FcmError {
+///     code: 401,
+///     message: "Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.",
+///     status: "UNAUTHENTICATED"
 /// }
 /// ```
 #[derive(serde::Deserialize, thiserror::Error, Debug)]

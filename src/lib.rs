@@ -7,7 +7,7 @@ In order for this to work, you need a Google Cloud Platform account and Firebase
 
 # Usage
 This crate can be found [on crates.io](https://crates.io/crates/firebae-cm),
-so you can use it by adding `firebae_cm` to your project's `Cargo.toml`.
+so you can use it by adding `firebae-cm` to your project's `Cargo.toml`.
 
 # Example
 ```rust
@@ -24,7 +24,7 @@ async fn main() {
     let token = "your_jwt_token";
 
     // Define the receiver mode (Token, Topic or Condition).
-    let receivers = Receiver::Topic("subscribers".to_string());
+    let receivers = Receiver::topic("subscribers");
 
     // Create an empty message to your receiver(s).
     let body = MessageBody::new(receivers);
@@ -62,3 +62,5 @@ pub use settings::*;
 
 mod utils;
 pub use utils::*;
+
+pub use firebae_derive::*;

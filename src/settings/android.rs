@@ -1,8 +1,6 @@
-use std::collections::HashMap;
-
 use serde_json::Value;
 
-use crate::{AndroidFcmOptions, AndroidNotification};
+use crate::{AndroidFcmOptions, AndroidNotification, IntoFirebaseMap};
 
 /// Represents the Android message priority.
 /// See <https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#androidmessagepriority>.
@@ -63,10 +61,10 @@ impl AndroidConfig {
         self
     }
 
-    /// Sets the data of the message.
+    /// Sets the data of the message. Accepts any type that implements IntoFirebaseMap, which will construct the required Map<String, String>.
     /// See <https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#AndroidConfig>.
-    pub fn data(&mut self, data: impl Into<HashMap<String, String>>) -> crate::Result<&mut Self> {
-        self.data = Some(serde_json::to_value(data.into())?);
+    pub fn data(&mut self, data: impl IntoFirebaseMap) -> crate::Result<&mut Self> {
+        self.data = Some(serde_json::to_value(data.as_map().get_map())?);
         Ok(self)
     }
 
