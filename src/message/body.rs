@@ -67,6 +67,27 @@ impl MessageBody {
     }
 
     /// Sets the data of the message. Accepts any type that implements IntoFirebaseMap, which will construct the required Map<String, String>.
+    /// For ease, you can use the [crate::AsFirebaseMap] derive macro on your structs:
+    /// ```rust
+    /// use firebae_cm::{AsFirebaseMap, MessageBody, Receiver};
+    /// 
+    /// #[derive(AsFirebaseMap)]
+    /// struct MessageData {
+    ///     field1: String,
+    ///     field2: i32, // Note that this will become a String in Firebase
+    /// }
+    /// 
+    /// fn main() {
+    ///     let data = MessageData {
+    ///         field1: "Hello, world!".to_string(),
+    ///         field2: 5481,
+    ///     };
+    /// 
+    ///     let receiver = Receiver::topic("subscribers");
+    ///     let mut config = MessageBody::new(receiver);
+    ///     config.data(data).expect("Data not parsable");    
+    /// }
+    /// ```
     /// See <https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#resource:-message>.
     pub fn data(&mut self, data: impl IntoFirebaseMap) -> crate::Result<&mut Self> {
         self.data = Some(serde_json::to_value(data.as_map().get_map())?);

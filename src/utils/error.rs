@@ -13,4 +13,4 @@ pub enum Error {
     TimeFormatError(#[from] time::error::Format),
 }
 
-pub type Result<T> = std::result::Result<T, Error>;
+pub(crate) type Result<T> = std::result::Result<T, Error>;

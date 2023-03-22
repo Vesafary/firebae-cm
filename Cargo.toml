@@ -1,8 +1,8 @@
 [package]
 name = "firebae-cm"
-version = "0.4.0"
+version = "0.4.1"
 edition = "2021"
-
+authors = ["Thomas Veldman <apps@thomasveldman.nl>"]
 description = "A Firebase Cloud Messaging Http V1 implementation"
 license = "MIT"
 homepage = "https://github.com/Vesafary/firebae-cm"

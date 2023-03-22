@@ -1,9 +1,19 @@
 use std::collections::HashMap;
 
+/// Represents a String: String map that can be used in some Firebase objects for fields such as data, payload and headers.
+/// You can use the [crate::AsFirebaseMap] derive implementation for ease.
+/// ```rust
+/// use firebae_cm::{AsFirebaseMap};
+/// 
+/// #[derive(AsFirebaseMap)]
+/// struct Data {
+///     a: String,
+///     b: i32,  // Transformed into a String.
+/// }
+/// ```
 #[derive(Debug, Clone, Default)]
 pub struct FirebaseMap(HashMap<String, String>);
 
-/// Represents a String: String map that can be used for data, headers, etc fields within Firebase objects.
 impl FirebaseMap {
     /// Create a new map.
     pub fn new() -> Self {
@@ -12,7 +22,6 @@ impl FirebaseMap {
 
     /// Insert an entry into the map. The key must implement Into<String> (this will usually be the field name),
     /// the value must implement FirebaseMapValue. This struct is usually used together with the [IntoFirebaseMap] trait.
-    /// Also, check out the AsFirebaseMap trait for a derive implementation.
     /// ```rust
     /// use firebae_cm::{FirebaseMap, IntoFirebaseMap};
     /// struct Data {

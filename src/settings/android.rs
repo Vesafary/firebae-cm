@@ -62,7 +62,26 @@ impl AndroidConfig {
     }
 
     /// Sets the data of the message. Accepts any type that implements IntoFirebaseMap, which will construct the required Map<String, String>.
-    /// See <https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#AndroidConfig>.
+    /// For ease, you can use the [crate::AsFirebaseMap] derive macro on your structs:
+    /// ```rust
+    /// use firebae_cm::{AsFirebaseMap, AndroidConfig};
+    /// 
+    /// #[derive(AsFirebaseMap)]
+    /// struct Data {
+    ///     field1: String,
+    ///     field2: i32, // Note that this will become a String in Firebase
+    /// }
+    /// 
+    /// fn main() {
+    ///     let data = Data {
+    ///         field1: "Hello, world!".to_string(),
+    ///         field2: 5481,
+    ///     };
+    /// 
+    ///     let mut config = AndroidConfig::new();
+    ///     config.data(data).expect("Data not parsable");    
+    /// }
+    /// ```
     pub fn data(&mut self, data: impl IntoFirebaseMap) -> crate::Result<&mut Self> {
         self.data = Some(serde_json::to_value(data.as_map().get_map())?);
         Ok(self)
