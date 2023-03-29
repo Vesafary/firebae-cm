@@ -1,12 +1,14 @@
 [package]
 name = "firebae-cm"
-version = "0.4.1"
+version = "0.4.2"
 edition = "2021"
 authors = ["Thomas Veldman <apps@thomasveldman.nl>"]
 description = "A Firebase Cloud Messaging Http V1 implementation"
 license = "MIT"
 homepage = "https://github.com/Vesafary/firebae-cm"
 repository = "https://github.com/Vesafary/firebae-cm"
+keywords = ["web", "firebase"]
+categories = ["Web programming", "API bindings"]
 
 [dependencies]
 firebae-derive =    { version = "0.1.0" }
