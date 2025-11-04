@@ -20,25 +20,25 @@ impl ApnsConfig {
     }
 
     /// Set the headers field. Accepts any type that implements IntoFirebaseMap, which will construct the required Map<String, String>.
-    /// 
+    ///
     /// For ease, you can use the [crate::AsFirebaseMap] derive macro on your structs:
     /// ```rust
     /// use firebae_cm::{AsFirebaseMap, ApnsConfig};
-    /// 
+    ///
     /// #[derive(AsFirebaseMap)]
     /// struct ApnsHeaders {
     ///     field1: String,
     ///     field2: String,
     /// }
-    /// 
+    ///
     /// fn main() {
     ///     let headers = ApnsHeaders {
     ///         field1: "Hello,".to_string(),
     ///         field2: "world!".to_string(),
     ///     };
-    /// 
+    ///
     ///     let mut config = ApnsConfig::new();
-    ///     config.headers(headers).expect("Data not parsable");    
+    ///     config.headers(headers).expect("Data not parsable");
     /// }
     /// ```
     pub fn headers(&mut self, headers: impl IntoFirebaseMap) -> crate::Result<&mut Self> {
@@ -47,29 +47,29 @@ impl ApnsConfig {
     }
 
     /// Set the payload field. Accepts any type that implements IntoFirebaseMap, which will construct the required Map<String, String>.
-    ///     
+    ///
     /// For ease, you can use the [crate::AsFirebaseMap] derive macro on your structs:
     /// ```rust
     /// use firebae_cm::{AsFirebaseMap, ApnsConfig};
-    /// 
+    ///
     /// #[derive(AsFirebaseMap)]
     /// struct ApnsPayload {
     ///     field1: String,
     ///     field2: String,
     /// }
-    /// 
+    ///
     /// fn main() {
     ///     let payload = ApnsPayload {
     ///         field1: "Hello,".to_string(),
     ///         field2: "world!".to_string(),
     ///     };
-    /// 
+    ///
     ///     let mut config = ApnsConfig::new();
-    ///     config.payload(payload).expect("Data not parsable");    
+    ///     config.payload(payload).expect("Data not parsable");
     /// }
     /// ```
-    pub fn payload(&mut self, payload: impl IntoFirebaseMap) -> crate::Result<&mut Self> {
-        self.payload = Some(serde_json::to_value(payload.as_map().get_map())?);
+    pub fn payload(&mut self, payload: Value) -> crate::Result<&mut Self> {
+        self.payload = Some(payload);
         Ok(self)
     }
 
