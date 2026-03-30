@@ -2,7 +2,7 @@ use crate::Color;
 
 /// Represents the priority of the notification.
 /// See <https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#notificationpriority>.
-#[derive(serde::Serialize, Debug, Clone)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 #[serde(rename_all = "snake_case")]
 pub enum NotificationPriority {
     PriorityUnspecified,
@@ -15,7 +15,7 @@ pub enum NotificationPriority {
 
 /// Represents the visibility of the notification.
 /// See <https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#visibility>
-#[derive(serde::Serialize, Debug, Clone)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 #[serde(rename_all = "snake_case")]
 pub enum Visibility {
     VisibilityUnspecified,
@@ -27,7 +27,7 @@ pub enum Visibility {
 /// Represents the notification light settings of the notification.
 /// See <https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#lightsettings>.
 /// Durations are in seconds.
-#[derive(serde::Serialize, Debug, Default, Clone)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Default, Clone)]
 pub struct LightSettings {
     #[serde(skip_serializing_if = "Option::is_none")]
     color: Option<Color>,
@@ -68,7 +68,7 @@ impl LightSettings {
 ///     image: None,
 /// };
 /// ```
-#[derive(serde::Serialize, Debug, Clone, Default)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone, Default)]
 pub struct Notification {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,

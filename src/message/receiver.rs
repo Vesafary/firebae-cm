@@ -3,7 +3,7 @@
 /// a Topic (for all devices that have subscribed to that topic),
 /// or a Condition (for all devices that meet the condition).
 /// See the fields in [the documentation](https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#resource:-message).
-#[derive(serde::Serialize, Debug)]
+#[derive(serde::Serialize, serde::Deserialize, Debug)]
 #[serde(rename_all = "lowercase")]
 pub enum Receiver {
     Token(String),

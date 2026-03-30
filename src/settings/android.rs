@@ -4,7 +4,7 @@ use crate::{AndroidFcmOptions, AndroidNotification, IntoFirebaseMap};
 
 /// Represents the Android message priority.
 /// See <https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#androidmessagepriority>.
-#[derive(serde::Serialize, Debug, Clone)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 #[serde(rename_all = "lowercase")]
 pub enum AndroidMessagePriority {
     Normal,
@@ -65,21 +65,21 @@ impl AndroidConfig {
     /// For ease, you can use the [crate::AsFirebaseMap] derive macro on your structs:
     /// ```rust
     /// use firebae_cm::{AsFirebaseMap, AndroidConfig};
-    /// 
+    ///
     /// #[derive(AsFirebaseMap)]
     /// struct Data {
     ///     field1: String,
     ///     field2: i32, // Note that this will become a String in Firebase
     /// }
-    /// 
+    ///
     /// fn main() {
     ///     let data = Data {
     ///         field1: "Hello, world!".to_string(),
     ///         field2: 5481,
     ///     };
-    /// 
+    ///
     ///     let mut config = AndroidConfig::new();
-    ///     config.data(data).expect("Data not parsable");    
+    ///     config.data(data).expect("Data not parsable");
     /// }
     /// ```
     pub fn data(&mut self, data: impl IntoFirebaseMap) -> crate::Result<&mut Self> {
