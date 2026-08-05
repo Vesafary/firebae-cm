@@ -1,3 +1,5 @@
+pub(crate) mod duration;
+
 mod error;
 pub use error::*;
 

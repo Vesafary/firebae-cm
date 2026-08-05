@@ -1,0 +1,104 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: -D warnings
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: firebae-cm
+
+      # firebae-cm depends on firebae-derive by path during development.
+      # Drop this step once firebae-derive 0.2.0 is published and the path
+      # dependency is removed from Cargo.toml.
+      - uses: actions/checkout@v4
+        with:
+          repository: Vesafary/firebae-derive
+          path: firebae-derive
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: firebae-cm
+
+      - name: Check formatting
+        working-directory: firebae-cm
+        run: cargo fmt --all --check
+
+      - name: Clippy
+        working-directory: firebae-cm
+        run: cargo clippy --all-features --all-targets
+
+      - name: Test
+        working-directory: firebae-cm
+        run: cargo test --all-features
+
+      - name: Build without default features
+        working-directory: firebae-cm
+        run: cargo build --no-default-features
+
+  msrv:
+    name: MSRV
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: firebae-cm
+      - uses: actions/checkout@v4
+        with:
+          repository: Vesafary/firebae-derive
+          path: firebae-derive
+      # Must match `rust-version` in Cargo.toml.
+      - uses: dtolnay/rust-toolchain@1.85.0
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: firebae-cm
+      - name: Check
+        working-directory: firebae-cm
+        run: cargo check --all-features
+
+  audit:
+    name: Security audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: rustsec/audit-check@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  examples:
+    name: Examples
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: firebae-cm
+      - uses: actions/checkout@v4
+        with:
+          repository: Vesafary/firebae-derive
+          path: firebae-derive
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: firebae-cm
+      - name: Build examples
+        working-directory: firebae-cm/examples
+        run: |
+          for example in authentication managed_oauth with_data; do
+            echo "::group::$example"
+            cargo build --manifest-path "$example/Cargo.toml"
+            echo "::endgroup::"
+          done
