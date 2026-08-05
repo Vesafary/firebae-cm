@@ -6,9 +6,13 @@ use crate::{
 
 /// A message body as described in <https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#resource:-message>.
 ///
-/// For initialization, it requires a [Receiver](Receiver), which is either a token, a topic or a condition.
+/// For initialization, it requires a [Receiver](Receiver), which is a token, a fid, a topic or a condition.
 ///
-/// After initialization, fields can be set using the setter functions.
+/// After initialization, fields can be set using the chainable setter functions.
+///
+/// Note that the `name` field of the Firebase Message resource is output only — it is
+/// the identifier Firebase assigns to a sent message, returned by
+/// [crate::Client::send], and so it cannot be set here.
 ///
 /// # Example
 /// ```rust
@@ -16,17 +20,14 @@ use crate::{
 ///
 /// // Setup of message fields.
 /// let receiver = Receiver::topic("subscribers");
-/// let notification = Notification::new().with_title("Hello, ").with_body("world!");
+/// let notification = Notification::new().title("Hello, ").body("world!");
 ///
-/// // Create MessageBody and set the message name and notification.
-/// let mut body = MesageBody::new(receiver);
-/// body.name("Celebration")
-///     .notification(notification);
+/// // Create MessageBody and set the notification.
+/// let body = MessageBody::new(receiver).notification(notification);
 /// ```
-#[derive(serde::Serialize, Debug)]
+#[derive(serde::Serialize, Debug, Clone)]
+#[must_use]
 pub struct MessageBody {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    name: Option<String>,
     #[serde(flatten)]
     receiver: Receiver,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -48,7 +49,6 @@ impl MessageBody {
     /// See <https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#resource:-message>.
     pub fn new(receiver: Receiver) -> Self {
         Self {
-            name: None,
             receiver,
             data: None,
             notification: None,
@@ -59,72 +59,64 @@ impl MessageBody {
         }
     }
 
-    /// Sets the name of the message.
-    /// See <https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#resource:-message>.
-    pub fn name(&mut self, name: impl Into<String>) -> &mut Self {
-        self.name = Some(name.into());
-        self
-    }
-
     /// Sets the data of the message. Accepts any type that implements IntoFirebaseMap, which will construct the required Map<String, String>.
     /// For ease, you can use the [crate::AsFirebaseMap] derive macro on your structs:
     /// ```rust
     /// use firebae_cm::{AsFirebaseMap, MessageBody, Receiver};
-    /// 
+    ///
     /// #[derive(AsFirebaseMap)]
     /// struct MessageData {
     ///     field1: String,
     ///     field2: i32, // Note that this will become a String in Firebase
     /// }
-    /// 
-    /// fn main() {
-    ///     let data = MessageData {
-    ///         field1: "Hello, world!".to_string(),
-    ///         field2: 5481,
-    ///     };
-    /// 
-    ///     let receiver = Receiver::topic("subscribers");
-    ///     let mut config = MessageBody::new(receiver);
-    ///     config.data(data).expect("Data not parsable");    
-    /// }
+    ///
+    /// let data = MessageData {
+    ///     field1: "Hello, world!".to_string(),
+    ///     field2: 5481,
+    /// };
+    ///
+    /// let receiver = Receiver::topic("subscribers");
+    /// let body = MessageBody::new(receiver).data(data).expect("Data not parsable");
     /// ```
     /// See <https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#resource:-message>.
-    pub fn data(&mut self, data: impl IntoFirebaseMap) -> crate::Result<&mut Self> {
-        self.data = Some(serde_json::to_value(data.as_map().get_map())?);
+    pub fn data(mut self, data: impl IntoFirebaseMap) -> crate::Result<Self> {
+        let map = data.as_map();
+        map.validate_as_data()?;
+        self.data = Some(serde_json::to_value(map.into_inner())?);
         Ok(self)
     }
 
     /// Sets the notification of the message.
     /// See <https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#notification>.
-    pub fn notification(&mut self, notification: Notification) -> &mut Self {
+    pub fn notification(mut self, notification: Notification) -> Self {
         self.notification = Some(notification);
         self
     }
 
     /// Sets the Android configuration for the message.
     /// See <https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#androidconfig>.
-    pub fn android(&mut self, android: AndroidConfig) -> &mut Self {
+    pub fn android(mut self, android: AndroidConfig) -> Self {
         self.android = Some(android);
         self
     }
 
     /// Sets the Apple configuration for the message.
     /// See <https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#apnsconfig>.
-    pub fn apns(&mut self, apns: ApnsConfig) -> &mut Self {
+    pub fn apns(mut self, apns: ApnsConfig) -> Self {
         self.apns = Some(apns);
         self
     }
 
     /// Sets the web configuration for the message.
     /// See <https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#webpushconfig>.
-    pub fn webpush(&mut self, webpush: WebpushConfig) -> &mut Self {
+    pub fn webpush(mut self, webpush: WebpushConfig) -> Self {
         self.webpush = Some(webpush);
         self
     }
 
     /// Sets additional Firebase options for the message.
     /// See <https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages#fcmoptions>.
-    pub fn fcm_options(&mut self, fcm_options: FcmOptions) -> &mut Self {
+    pub fn fcm_options(mut self, fcm_options: FcmOptions) -> Self {
         self.fcm_options = Some(fcm_options);
         self
     }

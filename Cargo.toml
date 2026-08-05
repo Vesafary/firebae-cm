@@ -1,25 +1,33 @@
 [package]
 name = "firebae-cm"
-version = "0.4.2"
-edition = "2021"
+version = "0.5.0"
+edition = "2024"
+rust-version = "1.85"
 authors = ["Thomas Veldman <apps@thomasveldman.nl>"]
 description = "A Firebase Cloud Messaging Http V1 implementation"
 license = "MIT"
 homepage = "https://github.com/Vesafary/firebae-cm"
 repository = "https://github.com/Vesafary/firebae-cm"
 keywords = ["web", "firebase"]
-categories = ["Web programming", "API bindings"]
+categories = ["web-programming", "api-bindings"]
+readme = "README.md"
 
 [dependencies]
-firebae-derive =    { version = "0.1.0" }
-serde =             { version = "1.0.158", features = ["derive"] }
-serde_json =        { version = "1.0.94" }
-reqwest =           { version = "0.11.15", features = ["json", "rustls-tls"], default-features = false }
-time =              { version = "0.3.20", features = ["formatting"] }
-log =               { version = "0.4.17" }
-thiserror =         { version = "1.0.40" }
-gcp_auth =          { version = "0.7.5", optional = true }
-tokio =             { version = "1.26.0", features = ["sync", "parking_lot"], default-features = false, optional = true }
+# NOTE: the `path` entry is for local development. firebae-derive 0.2.0 must be
+# published to crates.io before firebae-cm 0.5.0 can be released.
+firebae-derive =    { version = "0.2.0", path = "../firebae-derive" }
+serde =             { version = "1.0.229", features = ["derive"] }
+serde_json =        { version = "1.0.151" }
+reqwest =           { version = "0.13.4", features = ["json", "rustls"], default-features = false }
+time =              { version = "0.3.55", features = ["formatting"] }
+thiserror =         { version = "2.0.19" }
+futures-util =      { version = "0.3.31", default-features = false, features = ["std"] }
+gcp_auth =          { version = "0.12.7", optional = true }
+tokio =             { version = "1.53.1", features = ["sync", "parking_lot"], default-features = false, optional = true }
+
+[dev-dependencies]
+serde_json =        { version = "1.0.151" }
+tokio =             { version = "1.53.1", features = ["macros", "rt"] }
 
 [features]
 oauth = ["dep:gcp_auth", "dep:tokio"]

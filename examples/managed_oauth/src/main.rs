@@ -1,4 +1,4 @@
-use firebae_cm::{Client, Error, Message, MessageBody, Receiver};
+use firebae_cm::{Client, Message, MessageBody, Receiver};
 
 // Make sure to use the GOOGLE_APPLICATION_CREDENTIALS environment variable.
 #[tokio::main]
@@ -9,7 +9,9 @@ async fn main() {
         .await
         .expect("Unable to authenticate");
 
-    let client = Client::new();
-    let response: Result<String, Error> = client.send(message).await;
-    println!("{:?}", response);
+    let client = Client::new().expect("Unable to build client");
+    match client.send(message).await {
+        Ok(name) => println!("sent: {name}"),
+        Err(e) => eprintln!("failed: {e}"),
+    }
 }

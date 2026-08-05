@@ -7,5 +7,5 @@ edition = "2021"
 
 [dependencies]
 firebae-cm = { path = "../../" }
-gcp_auth = "0.7.5"
-tokio = { version = "1.26.0", features = ["full"] }
+gcp_auth = "0.12.7"
+tokio = { version = "1.53.1", features = ["full"] }

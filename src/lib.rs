@@ -10,7 +10,7 @@ This crate can be found [on crates.io](https://crates.io/crates/firebae-cm),
 so you can use it by adding `firebae-cm` to your project's `Cargo.toml`.
 
 # Example
-```rust
+```no_run
 use firebae_cm::{
     Client,
     Error,
@@ -19,34 +19,40 @@ use firebae_cm::{
     Receiver,
 };
 
-#[tokio::main]
-async fn main() {
-    let token = "your_jwt_token";
+# async fn run() -> Result<(), Error> {
+let token = "your_jwt_token";
 
-    // Define the receiver mode (Token, Topic or Condition).
-    let receivers = Receiver::topic("subscribers");
+// Define the receiver mode (Token, Fid, Topic or Condition).
+let receivers = Receiver::topic("subscribers");
 
-    // Create an empty message to your receiver(s).
-    let body = MessageBody::new(receivers);
+// Create an empty message to your receiver(s).
+let body = MessageBody::new(receivers);
 
-    // Finalize the message with the correct url and authentication.
-    let message = Message::new("project_id", token, body);
+// Finalize the message with the correct url and authentication.
+let message = Message::new("project_id", token, body);
 
-    // Create a client and send the data.
-    let client = Client::new();
-    let response: Result<String, Error> = client.send(message).await;
-    println!("{:?}", response);
-}
+// Create a client and send the data.
+let client = Client::new()?;
+let name = client.send(message).await?;
+println!("{}", name);
+# Ok(())
+# }
 ```
 
 # Features
 * **oauth** - Enables automatic OAuth authentication.
-You will still need Firebase to be setup correctly and the path to a
-valid `credentials.json` file in the `GOOGLE_APPLICATION_CREDENTIALS`
-environment variable. Then, creating a message can be done using `Message::with_oauth("project_id", body).await?`.
+  You will still need Firebase to be setup correctly and the path to a
+  valid `credentials.json` file in the `GOOGLE_APPLICATION_CREDENTIALS`
+  environment variable. Then, creating a message can be done using
+  `Message::with_oauth("project_id", body).await?`.
 */
 
 #![cfg_attr(docsrs, feature(doc_cfg))]
+#![warn(missing_docs)]
+
+// Lets the `AsFirebaseMap` derive macro emit `::firebae_cm::...` paths that resolve
+// identically inside this crate, in its doctests, and in downstream crates.
+extern crate self as firebae_cm;
 
 mod client;
 pub use client::*;

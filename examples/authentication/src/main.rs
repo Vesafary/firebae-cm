@@ -1,28 +1,25 @@
-use gcp_auth::AuthenticationManager;
-
-use firebae_cm::{Client, Error, Message, MessageBody, Receiver};
+use firebae_cm::{Client, Message, MessageBody, Receiver};
 
 // Make sure to use the GOOGLE_APPLICATION_CREDENTIALS environment variable.
 // (see the gcp_auth crate).
+//
+// For most uses the `oauth` feature is simpler; see the managed_oauth example.
 #[tokio::main]
 async fn main() {
-    let manager = AuthenticationManager::new()
+    let provider = gcp_auth::provider()
         .await
-        .expect("unable to initialize authentication manager");
+        .expect("unable to initialize authentication provider");
     let scopes = &["https://www.googleapis.com/auth/cloud-platform"];
 
-    let auth_token = manager
-        .get_token(scopes)
-        .await
-        .expect("Couldn't fetch token");
-
-    let token = auth_token.as_str().trim_end_matches('.');
+    let auth_token = provider.token(scopes).await.expect("Couldn't fetch token");
 
     let receivers = Receiver::topic("subscribers");
     let body = MessageBody::new(receivers);
-    let message = Message::new("your-project-id", token, body);
+    let message = Message::new("your-project-id", auth_token.as_str(), body);
 
-    let client = Client::new();
-    let response: Result<String, Error> = client.send(message).await;
-    println!("{:?}", response);
+    let client = Client::new().expect("Unable to build client");
+    match client.send(message).await {
+        Ok(name) => println!("sent: {name}"),
+        Err(e) => eprintln!("failed: {e}"),
+    }
 }
